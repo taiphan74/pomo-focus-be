@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { OtpModule } from './otp/otp.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forFeature([User]),
   UserModule,
   AuthModule,
+  RedisModule,
+  OtpModule,
   ],
   controllers: [],
   providers: [],

@@ -16,6 +16,9 @@ export class User {
     @Column({ type: 'varchar', length: 255 })
     email: string;
 
+    @Column({ type: 'boolean', default: false })
+    isActive: boolean;
+
     @Column({ type: 'varchar', length: 255, select: false })
     passwordHash: string;
 
