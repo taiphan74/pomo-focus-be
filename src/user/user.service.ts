@@ -37,11 +37,8 @@ export class UserService {
     }
 
     async findByIdWithRefresh(id: string): Promise<User | null> {
-        return this.userRepository
-            .createQueryBuilder('user')
-            .addSelect('user.refreshTokenHash')
-            .where('user.id = :id', { id })
-            .getOne();
+        // refresh tokens are now stored in Redis; keep simple findById if needed
+        return this.findById(id);
     }
 
     async findByEmail(email: string): Promise<User | null> {
@@ -53,15 +50,7 @@ export class UserService {
         return this.findById(id);
     }
 
-    async setRefreshToken(userId: string, refreshToken: string): Promise<void> {
-        const salt = await bcrypt.genSalt(10);
-        const refreshTokenHash = await bcrypt.hash(refreshToken, salt);
-        await this.userRepository.update(userId, { refreshTokenHash });
-    }
-
-    async clearRefreshToken(userId: string): Promise<void> {
-        await this.userRepository.update(userId, { refreshTokenHash: null });
-    }
+    // setRefreshToken/clearRefreshToken removed - refresh tokens stored in Redis
 
     async remove(id: string): Promise<void> {
         await this.userRepository.delete(id);

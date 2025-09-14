@@ -22,8 +22,7 @@ export class User {
     @Column({ type: 'varchar', length: 255, select: false })
     passwordHash: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: true, select: false })
-    refreshTokenHash?: string | null;
+    // refreshTokenHash removed: refresh tokens are stored in Redis (REDIS_AUTH) now
 
     @CreateDateColumn({ type: 'timestamptz' })
     createdAt: Date;
