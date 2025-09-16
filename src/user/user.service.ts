@@ -1,8 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -48,6 +49,33 @@ export class UserService {
     async update(id: string, updateData: Partial<User>): Promise<User | null> {
         await this.userRepository.update(id, updateData);
         return this.findById(id);
+    }
+
+    async updateAvatar(id: string, avatarFilename: string): Promise<User | null> {
+        const user = await this.findById(id);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        await this.userRepository.update(id, { avatar: avatarFilename });
+        return this.findById(id);
+    }
+
+    async removeAvatar(id: string): Promise<User | null> {
+        const user = await this.findById(id);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+    await this.userRepository.update(id, { avatar: undefined });
+        return this.findById(id);
+    }
+
+    async getUserWithAvatar(id: string): Promise<User | null> {
+        return this.userRepository.findOne({ 
+            where: { id },
+            select: ['id', 'email', 'isActive', 'avatar', 'createdAt', 'updatedAt']
+        });
     }
 
     // setRefreshToken/clearRefreshToken removed - refresh tokens stored in Redis
